@@ -24,20 +24,22 @@ const botController = new BotController(DEFAULT_CONFIG); // Передаем н�
 
 //////Обработка событий бота////////////////
 
-bot.onText(/\/h/, (msg) => botController.infoBot(msg, bot));
+bot.onText(/\/h\b/, (msg) => botController.infoBot(msg, bot));
 
-bot.onText(/\/s/, (msg) => botController.startFetchingSymbols(msg, bot));
+bot.onText(/\/s\b/, (msg) => botController.startFetchingSymbols(msg, bot));
 
-bot.onText(/\/q/, (msg) => botController.stopFetching(msg, bot));
+bot.onText(/\/q\b/, (msg) => botController.stopFetching(msg, bot));
 
-bot.onText(/\/r/, (msg) => botController.resetSettings(msg, bot));
+bot.onText(/\/r\b/, (msg) => botController.resetSettings(msg, bot));
 
 bot.onText(/\/f\s+([A-Z0-9]+)\s*([+-])/, (msg, match) => botController.startFetchingFollowCoin(msg, match, bot));
 
-bot.onText(/\/v(?:\s+(\d+))?/, (msg, match) => botController.setVolumeMultiplier(msg, match, bot));
+bot.onText(/\/svm(?:\s+(\d+))?\b/, (msg, match) => botController.setVolumeMultiplier(msg, match, bot));
 
-bot.onText(/\/t(?:\s+(\d+))?/, (msg, match) => botController.setTurnOver(msg, match, bot));
+bot.onText(/\/stf(?:\s+(\d+))?\b/, (msg, match) => botController.setTimeframe(msg, match, bot));
 
-bot.onText(/\/i(?:\s+(\d+))?/, (msg, match) => botController.setIntervalFetching(msg, match, bot));
+bot.onText(/\/stn(?:\s+(\d+))?\b/, (msg, match) => botController.setTurnOver(msg, match, bot));
+
+bot.onText(/\/sfi(?:\s+(\d+))?\b/, (msg, match) => botController.setIntervalFetching(msg, match, bot));
 
 console.log("Бот запущен...");

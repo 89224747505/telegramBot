@@ -77,6 +77,24 @@ class BotController {
         }
     }
 
+    setTimeframe(msg, match, bot) {
+        const chatId = msg.chat.id;
+        const settings = this.getSettings(chatId);
+
+        if (match[1]) {
+            const timeframe = parseInt(match[1], 10);
+            if (isNaN(timeframe) || timeframe <= 0) {
+                bot.sendMessage(chatId, "Ошибка: введите корректное число (больше 0).");
+                return;
+            }
+
+            settings.TIMEFRAME = timeframe;
+            bot.sendMessage(chatId, `Новый таймфрейм установлен: ${timeframe} минут`);
+        } else {
+            bot.sendMessage(chatId, `Текущий таймфрейм: ${settings.TIMEFRAME} минут`);
+        }
+    }
+
     startFetchingSymbols(msg, bot) {
         const chatId = msg.chat.id;
         const settings = this.getSettings(chatId);
@@ -149,9 +167,10 @@ class BotController {
             `/f - запустить слежение за конкретной монетой\n` +
             `/q - остановить парсинг\n` +
             `/h - получить помощь\n` +
-            `/t - получить или изменить минимальный объем $ по монетам\n` +
-            `/v - получить или изменить мультипликатор объема\n` +
-            `/i - получить или изменить интервал запросов к API\n` +
+            `/stf - получить или изменить таймфрейм\n` +
+            `/stn - получить или изменить минимальный объем $ по монетам\n` +
+            `/svm - получить или изменить мультипликатор объема\n` +
+            `/sfi - получить или изменить интервал запросов к API\n` +
             `/r - сбросить настройки к значениям по умолчанию`
         );
     }
