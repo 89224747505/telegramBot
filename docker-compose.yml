@@ -8,5 +8,3 @@ services:
     environment:
       - TELEGRAM_TOKEN=your_telegram_token_here
       # Добавь другие переменные, если нужно
-    volumes:
-      - .:/app # если хочешь монтировать код с хоста (для разработки)
