@@ -288,18 +288,18 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
                   ${trendBar2 ? bullish : bearish} - TrendBar2
                                       
                   TF      Сигнал  
-                  (01m)${macdValues['1']?.circle}${macdValues['1']?.arrow} 
-                  (03m)${macdValues['3']?.circle}${macdValues['3']?.arrow} 
-                  (05m)${macdValues['5']?.circle}${macdValues['5']?.arrow} 
-                  (15m)${macdValues['15']?.circle}${macdValues['15']?.arrow}
-                  (30m)${macdValues['30']?.circle}${macdValues['30']?.arrow}
-                  (01 h)${macdValues['60']?.circle}${macdValues['60']?.arrow}
-                  (02 h)${macdValues['120']?.circle}${macdValues['120']?.arrow}
-                  (04 h)${macdValues['240']?.circle}${macdValues['240']?.arrow}
-                  (06 h)${macdValues['360']?.circle}${macdValues['360']?.arrow}
-                  (12 h)${macdValues['720']?.circle}${macdValues['720']?.arrow}
-                  (01 D)${macdValues['D']?.circle}${macdValues['D']?.arrow} 
-                  (01W)${macdValues['W']?.circle}${macdValues['W']?.arrow} `; 
+                  (01m)${macdValues['1']?.circle}${macdValues['1']?.arrow}${macdValues['1']?.cross} 
+                  (03m)${macdValues['3']?.circle}${macdValues['3']?.arrow}${macdValues['3']?.cross} 
+                  (05m)${macdValues['5']?.circle}${macdValues['5']?.arrow}${macdValues['5']?.cross} 
+                  (15m)${macdValues['15']?.circle}${macdValues['15']?.arrow}${macdValues['15']?.cross}
+                  (30m)${macdValues['30']?.circle}${macdValues['30']?.arrow}${macdValues['30']?.cross}
+                  (01 h)${macdValues['60']?.circle}${macdValues['60']?.arrow}${macdValues['60']?.cross}
+                  (02 h)${macdValues['120']?.circle}${macdValues['120']?.arrow}${macdValues['120']?.cross}
+                  (04 h)${macdValues['240']?.circle}${macdValues['240']?.arrow}${macdValues['240']?.cross}
+                  (06 h)${macdValues['360']?.circle}${macdValues['360']?.arrow}${macdValues['360']?.cross}
+                  (12 h)${macdValues['720']?.circle}${macdValues['720']?.arrow}${macdValues['720']?.cross}
+                  (01 D)${macdValues['D']?.circle}${macdValues['D']?.arrow}${macdValues['D']?.cross} 
+                  (01W)${macdValues['W']?.circle}${macdValues['W']?.arrow}${macdValues['W']?.cross}`; 
       }
       
       settings.SIGNAL = channelBreakout.signal;
@@ -336,18 +336,18 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
     Сумма векторов ${sumVectors.toFixed(2)}
     
     TF      Сигнал  Значение  Вектор
-    (01m)${macdValues['1']?.circle}${macdValues['1']?.arrow} ${macdValues['1']?.value?.toFixed(5)}   ${macdValues['1']?.vector?.toFixed(5)} ${macdValues['1']?.limit}
-    (03m)${macdValues['3']?.circle}${macdValues['3']?.arrow} ${macdValues['3']?.value?.toFixed(5)}   ${macdValues['3']?.vector?.toFixed(5)} ${macdValues['3']?.limit}
-    (05m)${macdValues['5']?.circle}${macdValues['5']?.arrow} ${macdValues['5']?.value?.toFixed(5)}   ${macdValues['5']?.vector?.toFixed(5)} ${macdValues['5']?.limit}
-    (15m)${macdValues['15']?.circle}${macdValues['15']?.arrow} ${macdValues['15']?.value?.toFixed(5)}   ${macdValues['15']?.vector?.toFixed(5)} ${macdValues['15']?.limit}
-    (30m)${macdValues['30']?.circle}${macdValues['30']?.arrow} ${macdValues['30']?.value?.toFixed(5)}   ${macdValues['30']?.vector?.toFixed(5)} ${macdValues['30']?.limit}
-    (01 h)${macdValues['60']?.circle}${macdValues['60']?.arrow} ${macdValues['60']?.value?.toFixed(5)}   ${macdValues['60']?.vector?.toFixed(5)} ${macdValues['60']?.limit}
-    (02 h)${macdValues['120']?.circle}${macdValues['120']?.arrow} ${macdValues['120']?.value?.toFixed(5)}   ${macdValues['120']?.vector?.toFixed(5)} ${macdValues['120']?.limit}
-    (04 h)${macdValues['240']?.circle}${macdValues['240']?.arrow} ${macdValues['240']?.value?.toFixed(5)}   ${macdValues['240']?.vector?.toFixed(5)} ${macdValues['240']?.limit}
-    (06 h)${macdValues['360']?.circle}${macdValues['360']?.arrow} ${macdValues['360']?.value?.toFixed(5)}   ${macdValues['360']?.vector?.toFixed(5)} ${macdValues['360']?.limit}
-    (12 h)${macdValues['720']?.circle}${macdValues['720']?.arrow} ${macdValues['720']?.value?.toFixed(5)}   ${macdValues['720']?.vector?.toFixed(5)} ${macdValues['720']?.limit}
-    (01 D)${macdValues['D']?.circle}${macdValues['D']?.arrow} ${macdValues['D']?.value?.toFixed(5)}   ${macdValues['D']?.vector?.toFixed(5)} ${macdValues['D']?.limit}
-    (01W)${macdValues['W']?.circle}${macdValues['W']?.arrow} ${macdValues['W']?.value?.toFixed(5)}   ${macdValues['W']?.vector?.toFixed(5)} ${macdValues['W']?.limit}`;   
+    (01m)${macdValues['1']?.circle}${macdValues['1']?.arrow} ${macdValues['1']?.value?.toFixed(5)}   ${macdValues['1']?.vector?.toFixed(5)} ${macdValues['1']?.limit}${macdValues['1']?.cross}
+    (03m)${macdValues['3']?.circle}${macdValues['3']?.arrow} ${macdValues['3']?.value?.toFixed(5)}   ${macdValues['3']?.vector?.toFixed(5)} ${macdValues['3']?.limit}${macdValues['3']?.cross}
+    (05m)${macdValues['5']?.circle}${macdValues['5']?.arrow} ${macdValues['5']?.value?.toFixed(5)}   ${macdValues['5']?.vector?.toFixed(5)} ${macdValues['5']?.limit}${macdValues['5']?.cross}
+    (15m)${macdValues['15']?.circle}${macdValues['15']?.arrow} ${macdValues['15']?.value?.toFixed(5)}   ${macdValues['15']?.vector?.toFixed(5)} ${macdValues['15']?.limit}${macdValues['15']?.cross}
+    (30m)${macdValues['30']?.circle}${macdValues['30']?.arrow} ${macdValues['30']?.value?.toFixed(5)}   ${macdValues['30']?.vector?.toFixed(5)} ${macdValues['30']?.limit}${macdValues['30']?.cross}
+    (01 h)${macdValues['60']?.circle}${macdValues['60']?.arrow} ${macdValues['60']?.value?.toFixed(5)}   ${macdValues['60']?.vector?.toFixed(5)} ${macdValues['60']?.limit}${macdValues['60']?.cross}
+    (02 h)${macdValues['120']?.circle}${macdValues['120']?.arrow} ${macdValues['120']?.value?.toFixed(5)}   ${macdValues['120']?.vector?.toFixed(5)} ${macdValues['120']?.limit}${macdValues['120']?.cross}
+    (04 h)${macdValues['240']?.circle}${macdValues['240']?.arrow} ${macdValues['240']?.value?.toFixed(5)}   ${macdValues['240']?.vector?.toFixed(5)} ${macdValues['240']?.limit}${macdValues['240']?.cross}
+    (06 h)${macdValues['360']?.circle}${macdValues['360']?.arrow} ${macdValues['360']?.value?.toFixed(5)}   ${macdValues['360']?.vector?.toFixed(5)} ${macdValues['360']?.limit}${macdValues['360']?.cross}
+    (12 h)${macdValues['720']?.circle}${macdValues['720']?.arrow} ${macdValues['720']?.value?.toFixed(5)}   ${macdValues['720']?.vector?.toFixed(5)} ${macdValues['720']?.limit}${macdValues['720']?.cross}
+    (01 D)${macdValues['D']?.circle}${macdValues['D']?.arrow} ${macdValues['D']?.value?.toFixed(5)}   ${macdValues['D']?.vector?.toFixed(5)} ${macdValues['D']?.limit}${macdValues['D']?.cross}
+    (01W)${macdValues['W']?.circle}${macdValues['W']?.arrow} ${macdValues['W']?.value?.toFixed(5)}   ${macdValues['W']?.vector?.toFixed(5)} ${macdValues['W']?.limit}${macdValues['W']?.cross}`;   
    
 }
 
