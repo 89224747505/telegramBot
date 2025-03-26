@@ -112,7 +112,7 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
         TIMEFRAMES,
         VOLUME_MULTIPLIER
     } = settings;
-
+    
     //Расчет индиатора выхода из канала и выход из метода если выхода из канала нет
     const channelBreakout = await this.channelBreakoutSignalIndicator(symbol, TIMEFRAME, LENGTH_BREAKOUT, settings)
     if (!flag && channelBreakout.signal === 'NONE') return false;
@@ -136,16 +136,11 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
         (channelBreakout.signal === 'SHORT' && ema_trend_fast_slow === 'Bearish')
       );
       
-    //   if (isSignal && !isValidSignal) {
-    //     return false;
-    //   }
-    // console.log(symbol, ' - ', channelBreakout.signal, ' - ', ema_trend_fast_slow);
+    if (isSignal && channelBreakout.signal === 'NONE') {
+      return false;
+    }
 
-      if (isSignal && channelBreakout.signal === 'NONE') {
-        return false;
-      }
-
-    //Нахождение минимальных и средних объемов. И проверка условия при котором рост объемов сравнивается между средним и минимальным значением с мультипликатором
+       //Нахождение минимальных и средних объемов. И проверка условия при котором рост объемов сравнивается между средним и минимальным значением с мультипликатором
     const [minVolume, averageVolume, currentVolume] = this.volumeMinHighAverage(candles, AVERAGE_CANDLES_PERIOD);
 
     if (!flag && minVolume * VOLUME_MULTIPLIER > averageVolume) {
@@ -260,59 +255,82 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
     // Считаем среднее ATR по всем доступным значениям
     const avgATR = atrResult.reduce((a, b) => a + b, 0) / atrResult.length;
 
-    return `
-\`\`\`
-✅ ${symbol} Таймфрейм ${TIMEFRAME}м
-┌────────────────────────┬───────────┐
-│ Показатель             │ Значение  │
-├────────────────────────┼───────────┤
-│ Текущая цена           │ ${currentPrice} 
-├────────────────────────┼───────────┤
-│ Текущий объем          │ ${currentVolume.toFixed(2)} 
-│ Средний объем          │ ${averageVolume.toFixed(2)} 
-│ Минимальный объем      │ ${minVolume.toFixed(2)} 
-├────────────────────────┼───────────┤
-│ ADX                    │ ${lastADX.toFixed(2)} 
-│ ATR средняя            │ ${avgATR.toFixed(2)} 
-│ ATR                    │ ${lastATR.toFixed(2)} 
-│ VWAP                   │ ${VWAP.toFixed(0)} ${VWAP < currentPrice ? '🟢' : '🔴'} 
-├────────────────────────┼───────────┤
-│ Сигнал                 │ ${channelBreakout.signal !== 'NONE' ? channelBreakout.signal : 'отсутствует'} 
-│ Уровень входа          │ ${channelBreakout.signal !== 'NONE' ? channelBreakout.level : 'отсутствует'} 
-├────────────────────────┼───────────┤
-│ Период быстрой EMA     │ ${EMA_FAST_PERIOD} 
-│ Период медленной EMA   │ ${EMA_SLOW_PERIOD} 
-│ EMA тренд              │ ${ema_trend_fast_slow === 'Bullish' ? bullish : bearish} 
-├────────────────────────┼───────────┤
-│ Trend Signal           │ ${trendMeterSignal === 'Bullish' ? bullish : bearish} 
-│ TrendMeter1            │ ${trendMeter1} 
-│ TrendMeter2            │ ${trendMeter2} 
-│ TrendMeter3            │ ${trendMeter3} 
-│ TrendBar1              │ ${trendBar1 ? bullish : bearish} 
-│ TrendBar2              │ ${trendBar2 ? bullish : bearish} 
-├────────────────────────┼───────────┤
-│ Сумма векторов         │ ${sumVectors.toFixed(2)} 
-└────────────────────────┴───────────┘
+    if (isSignal && settings.SIGNAL === channelBreakout.signal) {
+        return `✅${symbol}               
+                  \*ТЕКУЩАЯ ЦЕНА ${currentPrice}\*
+                  Текущий объем ${currentVolume.toFixed(5)}               
+                  ADX ${lastADX.toFixed(2)}% \*${lastADX > 40 ? 'сильный тренд' : lastADX > 30 ? 'тренд' : lastADX > 20 ? 'слабый тренд' : 'флет'}\*
+                  ATR ${lastATR.toFixed(2)} \*${lastATR < avgATR ? 'слабая волотильность' : lastATR > 2*avgATR ? 'сильная волатильность' : 'оптимально'}\*               
+                  VWAP ${VWAP.toFixed(2)} \*${VWAP < currentPrice ? '🟢 возможен LONG' : '🔴 возможен SHORT'}\*
+                  ${ema_trend_fast_slow === 'Bullish' ? bullish : bearish} - EMA тренд
+                  ${trendMeterSignal === 'Bullish' ? bullish : bearish} - Trend Signal
+                  ${trendMeter1} - TrendMeter1
+                  ${trendMeter2} - TrendMeter2
+                  ${trendMeter3} - TrendMeter3
+                  ${trendBar1 ? bullish : bearish} - TrendBar1
+                  ${trendBar2 ? bullish : bearish} - TrendBar2
+                                      
+                  TF      Сигнал  
+                  (01m)${macdValues['1']?.circle}${macdValues['1']?.arrow} 
+                  (03m)${macdValues['3']?.circle}${macdValues['3']?.arrow} 
+                  (05m)${macdValues['5']?.circle}${macdValues['5']?.arrow} 
+                  (15m)${macdValues['15']?.circle}${macdValues['15']?.arrow}
+                  (30m)${macdValues['30']?.circle}${macdValues['30']?.arrow}
+                  (01 h)${macdValues['60']?.circle}${macdValues['60']?.arrow}
+                  (02 h)${macdValues['120']?.circle}${macdValues['120']?.arrow}
+                  (04 h)${macdValues['240']?.circle}${macdValues['240']?.arrow}
+                  (06 h)${macdValues['360']?.circle}${macdValues['360']?.arrow}
+                  (12 h)${macdValues['720']?.circle}${macdValues['720']?.arrow}
+                  (01 D)${macdValues['D']?.circle}${macdValues['D']?.arrow} 
+                  (01W)${macdValues['W']?.circle}${macdValues['W']?.arrow} `; 
+      }
+      
+      settings.SIGNAL = channelBreakout.signal;
 
-MACD таймфреймы:
-┌──────┬────────┬───────────┬─────────┐
-│ TF   │ Сигнал │ Значение  │ Вектор  │
-├──────┼────────┼───────────┼─────────┤
-│  1m  │ ${macdValues['1']?.circle}${macdValues['1']?.arrow} │ ${macdValues['1']?.value?.toFixed(5)}   ${macdValues['1']?.vector?.toFixed(5)}   ${macdValues['1']?.limit} 
-│  3m  │ ${macdValues['3']?.circle}${macdValues['3']?.arrow} │ ${macdValues['3']?.value?.toFixed(5)}   ${macdValues['3']?.vector?.toFixed(5)}   ${macdValues['3']?.limit} 
-│  5m  │ ${macdValues['5']?.circle}${macdValues['5']?.arrow} │ ${macdValues['5']?.value?.toFixed(5)}   ${macdValues['5']?.vector?.toFixed(5)}   ${macdValues['5']?.limit} 
-│ 15m  │ ${macdValues['15']?.circle}${macdValues['15']?.arrow} │ ${macdValues['15']?.value?.toFixed(5)}   ${macdValues['15']?.vector?.toFixed(5)}   ${macdValues['15']?.limit} 
-│ 30m  │ ${macdValues['30']?.circle}${macdValues['30']?.arrow} │ ${macdValues['30']?.value?.toFixed(5)}   ${macdValues['30']?.vector?.toFixed(5)}   ${macdValues['30']?.limit} 
-│  1h  │ ${macdValues['60']?.circle}${macdValues['60']?.arrow} │ ${macdValues['60']?.value?.toFixed(5)}   ${macdValues['60']?.vector?.toFixed(5)}   ${macdValues['60']?.limit} 
-│  2h  │ ${macdValues['120']?.circle}${macdValues['120']?.arrow} │ ${macdValues['120']?.value?.toFixed(5)}   ${macdValues['120']?.vector?.toFixed(5)}   ${macdValues['120']?.limit} 
-│  4h  │ ${macdValues['240']?.circle}${macdValues['240']?.arrow} │ ${macdValues['240']?.value?.toFixed(5)}   ${macdValues['240']?.vector?.toFixed(5)}   ${macdValues['240']?.limit} 
-│  6h  │ ${macdValues['360']?.circle}${macdValues['360']?.arrow} │ ${macdValues['360']?.value?.toFixed(5)}   ${macdValues['360']?.vector?.toFixed(5)}   ${macdValues['360']?.limit} 
-│ 12h  │ ${macdValues['720']?.circle}${macdValues['720']?.arrow} │ ${macdValues['720']?.value?.toFixed(5)}   ${macdValues['720']?.vector?.toFixed(5)}   ${macdValues['720']?.limit} 
-│  1D  │ ${macdValues['D']?.circle}${macdValues['D']?.arrow} │ ${macdValues['D']?.value?.toFixed(5)}   ${macdValues['D']?.vector?.toFixed(5)}   ${macdValues['D']?.limit} 
-│  1W  │ ${macdValues['W']?.circle}${macdValues['W']?.arrow} │ ${macdValues['W']?.value?.toFixed(5)}   ${macdValues['W']?.vector?.toFixed(5)}   ${macdValues['W']?.limit} 
-└──────┴────────┴───────────┴─────────┘
-\`\`\`
-`;    
+    return `✅${symbol} Таймфрейм ${TIMEFRAME}м
+    
+    \*СИГНАЛ ${channelBreakout.signal !== 'NONE' ? channelBreakout.signal : 'отсутствует'}\*
+    
+    \*ТЕКУЩАЯ ЦЕНА ${currentPrice}\*
+    \*УРОВЕНЬ ВХОДА ${channelBreakout.signal !== 'NONE' ? channelBreakout.level : 'отсутствует'}\*
+
+    Объемы:
+        Текущий ${currentVolume.toFixed(5)}
+        Средний ${averageVolume.toFixed(5)}
+        Минимум ${minVolume.toFixed(5)}
+       
+    ADX ${lastADX.toFixed(2)}% \*${lastADX > 40 ? 'сильный тренд' : lastADX > 30 ? 'тренд' : lastADX > 20 ? 'слабый тренд' : 'флет'}\*
+    Средний ATR ${avgATR.toFixed(5)} \*${lastATR < avgATR ? 'слабая волотильность' : lastATR > 2*avgATR ? 'сильная волатильность' : 'оптимально'}\*
+    ATR ${lastATR.toFixed(5)} 
+    VWAP ${VWAP.toFixed(2)} \*${VWAP < currentPrice ? '🟢 возможен LONG' : '🔴 возможен SHORT'}\*
+
+    EMA тренд ${ema_trend_fast_slow === 'Bullish' ? bullish : bearish}
+    FastEMA \*${EMA_FAST_PERIOD}\*
+    SlowEMA \*${EMA_SLOW_PERIOD}\* 
+    
+    
+    ${trendMeterSignal === 'Bullish' ? bullish : bearish} - Trend Signal
+    ${trendMeter1} - TrendMeter1
+    ${trendMeter2} - TrendMeter2
+    ${trendMeter3} - TrendMeter3
+    ${trendBar1 ? bullish : bearish} - TrendBar1
+    ${trendBar2 ? bullish : bearish} - TrendBar2
+        
+    Сумма векторов ${sumVectors.toFixed(2)}
+    
+    TF      Сигнал  Значение  Вектор
+    (01m)${macdValues['1']?.circle}${macdValues['1']?.arrow} ${macdValues['1']?.value?.toFixed(5)}   ${macdValues['1']?.vector?.toFixed(5)} ${macdValues['1']?.limit}
+    (03m)${macdValues['3']?.circle}${macdValues['3']?.arrow} ${macdValues['3']?.value?.toFixed(5)}   ${macdValues['3']?.vector?.toFixed(5)} ${macdValues['3']?.limit}
+    (05m)${macdValues['5']?.circle}${macdValues['5']?.arrow} ${macdValues['5']?.value?.toFixed(5)}   ${macdValues['5']?.vector?.toFixed(5)} ${macdValues['5']?.limit}
+    (15m)${macdValues['15']?.circle}${macdValues['15']?.arrow} ${macdValues['15']?.value?.toFixed(5)}   ${macdValues['15']?.vector?.toFixed(5)} ${macdValues['15']?.limit}
+    (30m)${macdValues['30']?.circle}${macdValues['30']?.arrow} ${macdValues['30']?.value?.toFixed(5)}   ${macdValues['30']?.vector?.toFixed(5)} ${macdValues['30']?.limit}
+    (01 h)${macdValues['60']?.circle}${macdValues['60']?.arrow} ${macdValues['60']?.value?.toFixed(5)}   ${macdValues['60']?.vector?.toFixed(5)} ${macdValues['60']?.limit}
+    (02 h)${macdValues['120']?.circle}${macdValues['120']?.arrow} ${macdValues['120']?.value?.toFixed(5)}   ${macdValues['120']?.vector?.toFixed(5)} ${macdValues['120']?.limit}
+    (04 h)${macdValues['240']?.circle}${macdValues['240']?.arrow} ${macdValues['240']?.value?.toFixed(5)}   ${macdValues['240']?.vector?.toFixed(5)} ${macdValues['240']?.limit}
+    (06 h)${macdValues['360']?.circle}${macdValues['360']?.arrow} ${macdValues['360']?.value?.toFixed(5)}   ${macdValues['360']?.vector?.toFixed(5)} ${macdValues['360']?.limit}
+    (12 h)${macdValues['720']?.circle}${macdValues['720']?.arrow} ${macdValues['720']?.value?.toFixed(5)}   ${macdValues['720']?.vector?.toFixed(5)} ${macdValues['720']?.limit}
+    (01 D)${macdValues['D']?.circle}${macdValues['D']?.arrow} ${macdValues['D']?.value?.toFixed(5)}   ${macdValues['D']?.vector?.toFixed(5)} ${macdValues['D']?.limit}
+    (01W)${macdValues['W']?.circle}${macdValues['W']?.arrow} ${macdValues['W']?.value?.toFixed(5)}   ${macdValues['W']?.vector?.toFixed(5)} ${macdValues['W']?.limit}`;   
    
 }
 
@@ -330,7 +348,7 @@ async getFuturesSymbols(botInstance, chatId, settings, coin = '', isSignal = fal
     if (coin) {
         const data = await this.calculateIndicators(coin, settings, true, isSignal);
                 
-        if (data) botInstance.sendMessage(chatId, data, { parse_mode: 'Markdown' });
+        if (data) botInstance.sendMessage(chatId, data, {parse_mode: 'Markdown'});
 
     } else {
 
@@ -344,7 +362,7 @@ async getFuturesSymbols(botInstance, chatId, settings, coin = '', isSignal = fal
                     
                     const data = await this.calculateIndicators(symbol.symbol, settings, false, isSignal);
                     
-                    if (data) botInstance.sendMessage(chatId, data, { parse_mode: 'Markdown' });
+                    if (data) botInstance.sendMessage(chatId, data, {parse_mode: 'Markdown'});
                 }
 
             } else {

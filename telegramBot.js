@@ -7,6 +7,7 @@ const DEFAULT_CONFIG = {
     URL_KLINES: 'https://api.bybit.com/v5/market/kline',
     URL_INFO: 'https://api.bybit.com/v5/market/instruments-info',
     TIMEFRAME: '1',
+    SIGNAL: 'NONE',
     LENGTH_BREAKOUT: 30,
     INTERVAL_FETCHING: 1,
     VOLUME_MULTIPLIER: 1,

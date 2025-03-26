@@ -128,6 +128,7 @@ class BotController {
         // Если уже есть интервал - останавливаем его
         if (this.intervals.has(chatId)) {
             clearInterval(this.intervals.get(chatId)); // Останавливаем предыдущее отслеживание
+            settings.SIGNAL = 'NONE';
             this.intervals.delete(chatId);
             bot.sendMessage(chatId, 'Предыдущее отслеживание остановлено.');
         }
@@ -149,9 +150,11 @@ class BotController {
 
     stopFetching(msg, bot) {
         const chatId = msg.chat.id;
+        const settings = this.getSettings(chatId);
 
         if (this.intervals.has(chatId)) {
             clearInterval(this.intervals.get(chatId));
+            settings.SIGNAL = 'NONE';
             this.intervals.delete(chatId);
             bot.sendMessage(chatId, "Остановлено!");
         } else {
