@@ -179,10 +179,11 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
     // MACD на разных таймфреймах
     const macdValues = {};
     let sumVectors = 0;
+    
     for (const timeframe of TIMEFRAMES) {
         const candles = await this.fetchKlines(symbol, timeframe, EMA_SLOW_PERIOD, settings);
         const closes = candles.map(c => parseFloat(c[4]));
-        
+    
         const macdResult = MACD.calculate({
             values: closes,
             fastPeriod: 12,
@@ -191,32 +192,48 @@ async calculateIndicators(symbol, settings, flag = false, isSignal = false) {
             SimpleMAOscillator: false,
             SimpleMASignal: false
         });
-        
+    
         if (macdResult.length > 1) {
             const currentMACD = macdResult[macdResult.length - 1].MACD;
             const currentSignal = macdResult[macdResult.length - 1].signal;
             const currentHistogram = macdResult[macdResult.length - 1].histogram;
             const previousHistogram = macdResult[macdResult.length - 2].histogram;
-            
+            const previousMACD = macdResult[macdResult.length - 2].MACD;
+            const previousSignal = macdResult[macdResult.length - 2].signal;
+    
             // Цвет кружка в зависимости от знака гистограммы
-
             const circle = currentHistogram > 0 ? '🟢' : '🔴';
-            
+    
             // Определение направления
             const arrow = currentHistogram > previousHistogram ? '🔼' : '🔽';
-
+    
             // Определение силы вектора направления
             const vector = currentHistogram - previousHistogram;
-            
-            //Прибавляем к сумме векторов
-            sumVectors+=Number(vector);
-
+    
+            // Прибавляем к сумме векторов
+            sumVectors += Number(vector);
+    
             // Проверяем отношение MACD к Signal, чтобы добавить лимит
             const limit = Math.abs(currentMACD) < 0.5 * Math.abs(currentSignal) ? '⚠️' : '';
-
+    
+            // Проверяем пересечение MACD и сигнальной линии
+            let cross = '';
+            if (previousMACD <= previousSignal && currentMACD > currentSignal) {
+                cross = '📈 Пересечение вверх';
+            } else if (previousMACD >= previousSignal && currentMACD < currentSignal) {
+                cross = '📉 Пересечение вниз';
+            }
+    
             // Формируем итоговый значок
-            macdValues[timeframe] = { value: currentHistogram, vector: vector, sumVectors: sumVectors, circle: circle, arrow: arrow, limit: limit };
-            
+            macdValues[timeframe] = {
+                value: currentHistogram,
+                vector: vector,
+                sumVectors: sumVectors,
+                circle: circle,
+                arrow: arrow,
+                limit: limit,
+                cross: cross
+            };
         }
     }
 
