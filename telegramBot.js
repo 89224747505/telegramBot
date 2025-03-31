@@ -15,7 +15,10 @@ const DEFAULT_CONFIG = {
     AVERAGE_CANDLES_PERIOD: 16,
     EMA_FAST_PERIOD: 28,
     EMA_SLOW_PERIOD: 100,
-    TIMEFRAMES: ['1', '3', '5', '15', '30', '60', '120', '240', '360', '720', 'D', 'W']
+    RSI_PERIOD: 14,
+    TIMEFRAMES: ['1', '3', '5', '15', '30', '60', '120', '240', '360', '720', 'D', 'W'],
+    RSI_BULL_BEAR_POWER_LENGTH: 2,
+    PW_BULL_BEAR_POWER_LENGTH: 15
 };
 
 const token = `7913661191:AAGDMEMNsRCjOBS9nG2uPU7YzKBBYGJbQgQ`;
